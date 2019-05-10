@@ -15,6 +15,7 @@ import dfp.create_custom_targeting
 import dfp.create_creatives
 import dfp.create_line_items
 import dfp.create_orders
+import dfp.get_line_items
 import dfp.get_ad_units
 import dfp.get_advertisers
 import dfp.get_custom_targeting
@@ -198,14 +199,17 @@ def create_line_item_configs(prices, order_id, placement_ids, ad_unit_ids, bidde
     # The DFP targeting value ID for this `hb_pb` price value.
     hb_pb_value_id = HBPBValueGetter.get_value_id(price_str)
 
-    config = dfp.create_line_items.create_line_item_config(name=line_item_name, order_id=order_id,
+    line_item_exist = dfp.get_line_items.get_line_item_by_name(line_item_name)
+    if line_item_exist is None:
+
+      config = dfp.create_line_items.create_line_item_config(name=line_item_name, order_id=order_id,
                                                            placement_ids=placement_ids, ad_unit_ids=ad_unit_ids,
                                                            cpm_micro_amount=price, sizes=sizes,
                                                            hb_bidder_key_id=hb_bidder_key_id, hb_pb_key_id=hb_pb_key_id,
                                                            hb_bidder_value_id=hb_bidder_value_id,
                                                            hb_pb_value_id=hb_pb_value_id, currency_code=currency_code)
-
-    line_items_config.append(config)
+  
+      line_items_config.append(config)
 
   return line_items_config
 
