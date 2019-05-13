@@ -1,3 +1,4 @@
+import settings
 
 from googleads import ad_manager
 
@@ -44,6 +45,8 @@ def create_line_item_config(name, order_id, placement_ids, ad_unit_ids, cpm_micr
     an object: the line item config
   """
 
+  is_video_creative = getattr(settings, 'DFP_IS_VIDEO_PLACEMENT', None)
+
   # Set up sizes.
   creative_placeholders = []
   
@@ -87,6 +90,7 @@ def create_line_item_config(name, order_id, placement_ids, ad_unit_ids, cpm_micr
     'targeting': {
       'inventoryTargeting': {},
       'customTargeting': top_set,
+      'requestPlatformTargeting': {},
     },
     'startDateTimeType': 'IMMEDIATELY',
     'unlimitedEndDateTime': True,
@@ -107,5 +111,9 @@ def create_line_item_config(name, order_id, placement_ids, ad_unit_ids, cpm_micr
 
   if ad_unit_ids is not None:
     line_item_config['targeting']['inventoryTargeting']['targetedAdUnits'] = [{'adUnitId': id} for id in ad_unit_ids]
+
+  if is_video_creative:
+    line_item_config['targeting']['requestPlatformTargeting']['targetedRequestPlatforms'] = 'VIDEO_PLAYER'
+    line_item_config['environmentType'] = 'VIDEO_PLAYER'
 
   return line_item_config

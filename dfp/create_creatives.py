@@ -2,6 +2,7 @@
 import logging
 import os
 import pprint
+import settings
 
 from googleads import ad_manager
 
@@ -42,24 +43,42 @@ def create_creative_config(name, advertiser_id):
     an object: the line item config
   """
 
-  snippet_file_path = os.path.join(os.path.dirname(__file__),
-    'creative_snippet.html')
-  with open(snippet_file_path, 'r') as snippet_file:
-      snippet = snippet_file.read()
+  is_video_creative = getattr(settings, 'DFP_IS_VIDEO_PLACEMENT', None)
 
-  # https://developers.google.com/doubleclick-publishers/docs/reference/v201802/CreativeService.Creative
-  config = {
-    'xsi_type': 'ThirdPartyCreative',
-    'name': name,
-    'advertiserId': advertiser_id,
-    'size': {
-      'width': '1',
-      'height': '1'
-    },
-    'snippet': snippet,
-    # https://github.com/prebid/Prebid.js/issues/418
-    'isSafeFrameCompatible': False,
-  }
+  if is_video_creative:
+    # https://developers.google.com/doubleclick-publishers/docs/reference/v201802/CreativeService.Creative
+    config = {
+      'xsi_type': 'VastRedirectCreative',
+      'name': name,
+      'advertiserId': advertiser_id,
+      'size': {
+        'width': '640',
+        'height': '480',
+        'isAspectRatio': False
+      },
+      'vastXmlUrl': 'https://ssp.theadx.com/vcache?rid=%%PATTERN:hb_uuid%%',
+      'vastRedirectType': 'LINEAR_AND_NON_LINEAR',
+      'duration': 1000
+    }
+  else: 
+    snippet_file_path = os.path.join(os.path.dirname(__file__),
+      'creative_snippet.html')
+    with open(snippet_file_path, 'r') as snippet_file:
+        snippet = snippet_file.read()
+
+    # https://developers.google.com/doubleclick-publishers/docs/reference/v201802/CreativeService.Creative
+    config = {
+      'xsi_type': 'ThirdPartyCreative',
+      'name': name,
+      'advertiserId': advertiser_id,
+      'size': {
+        'width': '1',
+        'height': '1'
+      },
+      'snippet': snippet,
+      # https://github.com/prebid/Prebid.js/issues/418
+      'isSafeFrameCompatible': False,
+    }
 
   return config
 
