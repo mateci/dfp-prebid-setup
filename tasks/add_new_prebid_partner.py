@@ -88,7 +88,7 @@ def setup_partner(user_email, advertiser_name, order_name, placements, ad_units,
   # Create line items.
   line_items_config = create_line_item_configs(prices, order_id, placement_ids, ad_unit_ids, bidder_code, sizes,
                                                hb_bidder_key_id, hb_pb_key_id, currency_code, HBBidderValueGetter,
-                                               HBPBValueGetter)
+                                               HBPBValueGetter, creative_ids[0])
   logger.info("Creating line items...")
   line_item_ids = dfp.create_line_items.create_line_items(line_items_config)
 
@@ -163,7 +163,7 @@ def get_or_create_dfp_targeting_key(name):
   return key_id
 
 def create_line_item_configs(prices, order_id, placement_ids, ad_unit_ids, bidder_code, sizes, hb_bidder_key_id,
-                             hb_pb_key_id, currency_code, HBBidderValueGetter, HBPBValueGetter):
+                             hb_pb_key_id, currency_code, HBBidderValueGetter, HBPBValueGetter, creative_id):
   """
   Create a line item config for each price bucket.
 
@@ -191,9 +191,10 @@ def create_line_item_configs(prices, order_id, placement_ids, ad_unit_ids, bidde
     price_str = num_to_str(micro_amount_to_num(price))
 
     # Autogenerate the line item name.
-    line_item_name = u'{bidder_code}: HB ${price}'.format(
+    line_item_name = u'{bidder_code}: {creative} HB ${price}'.format(
       bidder_code=bidder_code,
-      price=price_str
+      price=price_str,
+      creative=creative_id
     )
 
     # The DFP targeting value ID for this `hb_pb` price value.
