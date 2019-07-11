@@ -76,8 +76,7 @@ def create_creative_config(name, advertiser_id):
         'height': '1'
       },
       'snippet': snippet,
-      # https://github.com/prebid/Prebid.js/issues/418
-      'isSafeFrameCompatible': False,
+      'isSafeFrameCompatible': True,
     }
 
   return config
