@@ -56,7 +56,7 @@ def create_creative_config(name, advertiser_id):
         'height': '480',
         'isAspectRatio': False
       },
-      'vastXmlUrl': 'https://ssp.theadx.com/vcache?rid=%%PATTERN:hb_uuid%%',
+      'vastXmlUrl': getattr(settings, 'DFP_VIDEO_VCACHE_URL', None),
       'vastRedirectType': 'LINEAR_AND_NON_LINEAR',
       'duration': 1000
     }

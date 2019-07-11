@@ -39,6 +39,9 @@ DFP_PLACEMENT_SIZES = [
 # For Video placements, set as True
 DFP_IS_VIDEO_PLACEMENT = False
 
+# For Video placements, the vcache url of ssp
+DFP_VIDEO_VCACHE_URL = None
+
 # Whether we should create the advertiser in DFP if it does not exist.
 # If False, the program will exit rather than create an advertiser.
 DFP_CREATE_ADVERTISER_IF_DOES_NOT_EXIST = False
